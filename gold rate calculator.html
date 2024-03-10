@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Rate Calculator</title>
+    <script src="./jquery.min.js"></script>
+    <style>
+        .d-flex label {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        .d-flex {
+            margin-bottom: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="d-flex">
+        <label>Current Rate</label>
+        <input type="number" id="currentRate" placeholder="Enter Gold Rate">
+        <button id="set">Set Rate</button>
+    </div>
+
+    <div class="d-flex">
+        <label>Tola-Wt</label>
+        <input type="number" id="weightTola">
+    </div>
+
+    <div class="d-flex">
+        <label>Masha-Wt</label>
+        <input type="number" id="weightMasha">
+    </div>
+
+    <div class="d-flex">
+        <label>Ratti-Wt</label>
+        <input type="number" id="weightRratti">
+    </div>
+
+    <div class="d-flex">
+        <label>Final Payment</label>
+        <input type="number" id="finalPayment" disabled>
+        <button id="clear">Clear All</button>
+
+    </div>
+
+</body>
+
+<script>
+
+    $(function () {
+
+        $("#weightTola, #weightMasha, #weightRratti").prop('disabled', true);
+        $("#currentRate").focus();
+
+    });
+
+    $("#clear").on('click', function () {
+        $("#currentRate, #weightTola, #weightMasha, #weightRratti, #finalPayment").val('');
+    });
+
+    $("#set").on('click', function () {
+
+        if ($(this).text() == 'Edit Rate') {
+
+            $("#currentRate").prop('disabled', false);
+            $(this).text('Set Rate');
+
+            $("#weightTola, #weightMasha, #weightRratti").prop('disabled', true);
+            $("#currentRate").prop('disabled', false);
+        }
+        else {
+            const r = parseFloat($("#currentRate").val());
+
+            if (r > 0) {
+                $("#weightTola, #weightMasha, #weightRratti").prop('disabled', false);
+                $("#currentRate").prop('disabled', true);
+                $(this).text('Edit Rate');
+            }
+        }
+    });
+
+    $("#currentRate, #weightTola, #weightMasha, #weightRratti").on('input', function () { GetRatti(); });
+    function GetRatti() {
+        const currentRate = parseFloat($("#currentRate").val());
+        const weightTola = parseFloat($("#weightTola").val());
+        const weightMasha = parseFloat($("#weightMasha").val());
+        const weightRratti = parseFloat($("#weightRratti").val());
+
+        var rate = isNaN(currentRate) ? 0 : currentRate;
+        const tola = isNaN(weightTola) ? 0 : weightTola;
+        const masha = isNaN(weightMasha) ? 0 : weightMasha;
+        const ratti = isNaN(weightRratti) ? 0 : weightRratti;
+
+        rate = rate / 96;
+        const tolaRate = tola * 96 * rate;
+        const mashaRate = masha * 8 * rate;
+        const rattiRate = ratti * 1 * rate;
+
+        const paymentF = tolaRate + mashaRate + rattiRate;
+        $("#finalPayment").val(paymentF);
+    }
+
+</script>
+
+</html>
